@@ -366,7 +366,7 @@ fn parse_texture<'a>(
 ) -> Result<Texture2D> {
     let opt_gltf_image = gltf_texture.source();
     if opt_gltf_image.is_none() {
-        return Err(Error::GltfMissingTextureSource);
+        return Ok(Texture2D::default());
     }
 
     let gltf_image = opt_gltf_image.unwrap();
