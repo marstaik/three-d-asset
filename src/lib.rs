@@ -238,6 +238,9 @@ pub enum Error {
     #[cfg(feature = "gltf")]
     #[error("the .gltf file contain missing buffer data")]
     GltfMissingData,
+    #[cfg(feature = "gltf")]
+    #[error("the .gltf file contain missing texture sources")]
+    GltfMissingTextureSource,
     #[error("the .vol file contain wrong data size")]
     VolCorruptData,
     #[cfg(not(target_arch = "wasm32"))]

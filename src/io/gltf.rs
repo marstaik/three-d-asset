@@ -21,16 +21,19 @@ pub fn dependencies(raw_assets: &RawAssets, path: &PathBuf) -> HashSet<PathBuf> 
         }
 
         for texture in document.textures() {
-            match texture.source().unwrap().source() {
-                ::gltf::image::Source::Uri { uri, .. } => {
-                    if uri.starts_with("data:") {
-                        use std::str::FromStr;
-                        dependencies.insert(PathBuf::from_str(uri).unwrap());
-                    } else {
-                        dependencies.insert(base_path.join(uri));
+            match texture.source() {
+                Some(source) => match source.source() {
+                    ::gltf::image::Source::Uri { uri, .. } => {
+                        if uri.starts_with("data:") {
+                            use std::str::FromStr;
+                            dependencies.insert(PathBuf::from_str(uri).unwrap());
+                        } else {
+                            dependencies.insert(base_path.join(uri));
+                        }
                     }
-                }
-                _ => {}
+                    _ => {}
+                },
+                None => {}
             };
         }
     }
@@ -361,7 +364,12 @@ fn parse_texture<'a>(
     buffers: &[::gltf::buffer::Data],
     gltf_texture: ::gltf::texture::Texture,
 ) -> Result<Texture2D> {
-    let gltf_image = gltf_texture.source().unwrap();
+    let opt_gltf_image = gltf_texture.source();
+    if opt_gltf_image.is_none() {
+        return Err(Error::GltfMissingTextureSource);
+    }
+
+    let gltf_image = opt_gltf_image.unwrap();
     let gltf_source = gltf_image.source();
     let mut tex: Texture2D = match gltf_source {
         ::gltf::image::Source::Uri { uri, .. } => {
