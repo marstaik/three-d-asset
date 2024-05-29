@@ -21,7 +21,7 @@ pub fn dependencies(raw_assets: &RawAssets, path: &PathBuf) -> HashSet<PathBuf> 
         }
 
         for texture in document.textures() {
-            match texture.source().source() {
+            match texture.source().unwrap().source() {
                 ::gltf::image::Source::Uri { uri, .. } => {
                     if uri.starts_with("data:") {
                         use std::str::FromStr;
@@ -361,7 +361,7 @@ fn parse_texture<'a>(
     buffers: &[::gltf::buffer::Data],
     gltf_texture: ::gltf::texture::Texture,
 ) -> Result<Texture2D> {
-    let gltf_image = gltf_texture.source();
+    let gltf_image = gltf_texture.source().unwrap();
     let gltf_source = gltf_image.source();
     let mut tex: Texture2D = match gltf_source {
         ::gltf::image::Source::Uri { uri, .. } => {
