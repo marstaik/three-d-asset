@@ -485,7 +485,8 @@ impl TriMesh {
     ///
     pub fn compute_tangents(&mut self) {
         if self.normals.is_none() || self.uvs.is_none() {
-            panic!("mesh must have both normals and uv coordinates to be able to compute tangents");
+            //panic!("mesh must have both normals and uv coordinates to be able to compute tangents");
+            return;
         }
         let mut tan1 = vec![Vec3::new(0.0, 0.0, 0.0); self.positions.len()];
         let mut tan2 = vec![Vec3::new(0.0, 0.0, 0.0); self.positions.len()];
